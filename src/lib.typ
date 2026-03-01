@@ -59,7 +59,7 @@
         (left: 1.4cm, right: 1.4cm, top: 1cm, bottom: 1cm)
       }
     },
-    footer: context _cv-footer(metadata),
+    footer: ""
   )
 
   _cv-header(metadata, profile-photo, header-font, _regular-colors, _awesome-colors)

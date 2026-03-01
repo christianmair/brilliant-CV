@@ -15,12 +15,12 @@
 #let _header-styles(header-font, regular-colors, accent-color, header-info-font-size) = (
   first-name: (str) => text(
     font: header-font,
-    size: 32pt,
-    weight: "light",
+    size: 28pt,
+    weight: "regular",
     fill: regular-colors.darkgray,
     str,
   ),
-  last-name: (str) => text(font: header-font, size: 32pt, weight: "bold", str),
+  last-name: (str) => text(font: header-font, size: 28pt, weight: "regular", fill: regular-colors.darkgray, str),
   info: (str) => text(size: header-info-font-size, fill: accent-color, str),
   quote: (str) => text(size: 10pt, weight: "medium", style: "italic", fill: accent-color, str),
 )
@@ -34,8 +34,8 @@
 /// Personal info icons mapping
 /// -> dictionary
 #let _personal-info-icons = (
-  phone: fa-phone(),
-  email: fa-envelope(),
+  phone: "",
+  email: "",
   linkedin: fa-linkedin(),
   homepage: fa-pager(),
   github: fa-square-github(),
@@ -81,9 +81,9 @@
       box({
         // Adds icons
         icons.at(k)
-        h(5pt)
         // Adds hyperlinks
         if k == "email" {
+          h(3pt)
           link("mailto:" + v)[#v]
         } else if k == "linkedin" {
           link("https://www.linkedin.com/in/" + v)[#v]
@@ -131,7 +131,7 @@
 /// Create header photo section
 /// -> content
 #let _make-header-photo-section(display-profile-photo, profile-photo, profile-photo-radius) = {
-  set image(height: 3.6cm)
+  set image(height: 4cm)
   if display-profile-photo {
     box(profile-photo, radius: profile-photo-radius, clip: true)
   } else {
@@ -279,6 +279,7 @@
   awesome-colors: none,
   // Old parameter names (deprecated, for backward compatibility)
   awesomeColors: _awesome-colors,
+  omit_skip: false
 ) = context {
   let metadata = if metadata != none { metadata } else { cv-metadata.get() }
   // Backward compatibility logic (remove this block when deprecating)
@@ -292,7 +293,7 @@
   
   let lang = metadata.language
   let non-latin = _is-non-latin(lang)
-  let before-section-skip = _get-layout-value(metadata, "before_section_skip", 1pt)
+  let before-section-skip = if omit_skip { 0pt } else {_get-layout-value(metadata, "before_section_skip", 1pt)}
   let accent-color = _set-accent-color(awesome-colors, metadata)
   let highlighted-text = title.slice(0, letters)
   let normal-text = title.slice(letters)
@@ -312,7 +313,7 @@
       section-title-style(title, color: black)
     }
   }
-  h(2pt)
+  h(10pt)
   box(width: 1fr, line(stroke: 0.9pt, length: 100%))
 }
 
@@ -350,16 +351,16 @@
 /// Create entry style functions
 /// -> dictionary
 #let _entry-styles(accent-color, before-entry-description-skip) = (
-  a1: (str) => text(size: 10pt, weight: "bold", str),
-  a2: (str) => align(right, text(weight: "medium", fill: accent-color, style: "oblique", str)),
-  b1: (str) => text(size: 8pt, fill: accent-color, weight: "medium", smallcaps(str)),
+  a1: (str) => text(size: 11pt, weight: "bold", fill: black, str),
+  a2: (str) => align(right, text( weight: "medium", fill: accent-color, style: "oblique", str)),
+  b1: (str) => text(size: 10pt, fill: accent-color, weight: "medium", str),
   b2: (str) => align(right, text(size: 8pt, weight: "medium", fill: gray, style: "oblique", str)),
   dates: (dates) => [
     #set list(marker: [])
     #dates
   ],
   description: (str) => text(
-    fill: _regular-colors.lightgray,
+    fill: black,
     {
       v(before-entry-description-skip)
       str
@@ -454,7 +455,7 @@
         (styles.b2)(if society-first-setting { (styles.dates)(date) } else { location }),
       ),
     )
-    (styles.description)(description)
+    (if description != "" {(styles.description)(description)} else {})
     _create-entry-tag-list(tags, styles.tag)
     
   } else if entry-type == "start" {
@@ -648,14 +649,14 @@
 /// -> content
 #let cv-skill(type: "Type", info: "Info") = {
   let skill-type-style(str) = {
-    align(right, text(size: 10pt, weight: "bold", str))
+    align(right, text(size: 10pt, weight: "bold", fill: black, str))
   }
   let skill-info-style(str) = {
-    text(str)
+    text(fill: black, str)
   }
 
   table(
-    columns: (17%, 1fr),
+    columns: (21%, 1fr),
     inset: 0pt,
     column-gutter: 10pt,
     stroke: none,
